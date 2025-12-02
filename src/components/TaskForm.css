@@ -1,0 +1,50 @@
+.task-form {
+    margin-bottom: 30px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .task-input,
+  .task-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+  }
+
+  .task-input:focus,
+  .task-textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+  }
+
+  .task-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .btn-add {
+    width: 100%;
+    padding: 12px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .btn-add:hover {
+    background: #45a049;
+  }
+
+  .btn-add:active {
+    transform: translateY(1px);
+  }
