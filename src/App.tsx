@@ -1,16 +1,25 @@
-import './App.css';
-import TaskForm from './components/TaskForm';
-import TaskList from './components/TaskList';
-import { useTasks } from './hooks/useTasks';
+import React from "react";
+import "./App.css";
+import TaskForm from "./components/TaskForm";
+import TaskList from "./components/TaskList";
+import FilterBar from "./components/FilterBar";
+import { useTasks } from "./hooks/useTasks";
 
 function App() {
   const {
     tasks,
+    filteredTasks,
     isLoading,
+    filterType,
+    sortType,
+    searchQuery,
     addTask,
     toggleComplete,
     deleteTask,
-    clearAllTasks
+    clearAllTasks,
+    setFilterType,
+    setSortType,
+    setSearchQuery,
   } = useTasks();
 
   if (isLoading) {
@@ -24,7 +33,7 @@ function App() {
     );
   }
 
-  const completedCount = tasks.filter(task => task.completed).length;
+  const completedCount = tasks.filter((task) => task.completed).length;
   const activeCount = tasks.length - completedCount;
 
   return (
@@ -33,10 +42,10 @@ function App() {
         <h1>TaskMaster</h1>
         <p className="subtitle">Organize your work, one task at a time</p>
       </header>
-      
+
       <main>
         <TaskForm onAddTask={addTask} />
-        
+
         {tasks.length > 0 && (
           <>
             <div className="task-stats">
@@ -51,17 +60,29 @@ function App() {
               </span>
             </div>
 
-            <button 
-              className="btn-clear-all"
-              onClick={clearAllTasks}
-            >
+            <FilterBar
+              filterType={filterType}
+              sortType={sortType}
+              searchQuery={searchQuery}
+              onFilterChange={setFilterType}
+              onSortChange={setSortType}
+              onSearchChange={setSearchQuery}
+            />
+
+            {filteredTasks.length === 0 && searchQuery && (
+              <div className="no-results">
+                <p>No tasks found for "{searchQuery}"</p>
+              </div>
+            )}
+
+            <button className="btn-clear-all" onClick={clearAllTasks}>
               Clear All Tasks
             </button>
           </>
         )}
 
-        <TaskList 
-          tasks={tasks}
+        <TaskList
+          tasks={filteredTasks}
           onToggleComplete={toggleComplete}
           onDeleteTask={deleteTask}
         />
