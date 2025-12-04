@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import type { Task } from "../types/Task";
+import { type Task } from "../types/Task";
 import { loadTasks, saveTasks } from "../utils/localStorage";
 import { filterTasks, sortTasks } from "../utils/taskFilters";
 import { FilterType, SortType } from "../types/Filters";
@@ -30,16 +30,34 @@ export const useTasks = () => {
     return sortTasks(filtered, sortType);
   }, [tasks, filterType, sortType, searchQuery]);
 
-  const addTask = (title: string, description: string): void => {
+  const addTask = (
+    title: string,
+    description: string,
+    dueDate?: Date
+  ): void => {
     const neweTask: Task = {
       id: Date.now().toString(),
       title,
       description,
       completed: false,
       createdAt: new Date(),
+      dueDate,
     };
 
     setTasks((prevTasks) => [...prevTasks, neweTask]);
+  };
+
+  const editTask = (
+    id: string,
+    title: string,
+    description: string,
+    dueDate?: Date
+  ): void => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, title, description, dueDate } : task
+      )
+    );
   };
 
   const toggleComplete = (id: string): void => {
@@ -68,6 +86,7 @@ export const useTasks = () => {
     sortType,
     searchQuery,
     addTask,
+    editTask,
     toggleComplete,
     deleteTask,
     clearAllTasks,

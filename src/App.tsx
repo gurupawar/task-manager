@@ -1,9 +1,11 @@
-import React from "react";
+import { useState } from "react";
 import "./App.css";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import FilterBar from "./components/FilterBar";
 import { useTasks } from "./hooks/useTasks";
+import EditTaskModal from "./components/EditTaskModal";
+import type { Task } from "./types/Task";
 
 function App() {
   const {
@@ -14,6 +16,7 @@ function App() {
     sortType,
     searchQuery,
     addTask,
+    editTask,
     toggleComplete,
     deleteTask,
     clearAllTasks,
@@ -21,6 +24,8 @@ function App() {
     setSortType,
     setSearchQuery,
   } = useTasks();
+
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   if (isLoading) {
     return (
@@ -35,6 +40,10 @@ function App() {
 
   const completedCount = tasks.filter((task) => task.completed).length;
   const activeCount = tasks.length - completedCount;
+  const overdueCount = tasks.filter(
+    (task) =>
+      task.dueDate && !task.completed && new Date(task.dueDate) < new Date()
+  ).length;
 
   return (
     <div className="app">
@@ -58,6 +67,11 @@ function App() {
               <span className="stat">
                 🔄 Active: <strong>{activeCount}</strong>
               </span>
+              {overdueCount > 0 && (
+                <span className="stat overdue-stat">
+                  ⚠️ Overdue: <strong>{overdueCount}</strong>
+                </span>
+              )}
             </div>
 
             <FilterBar
@@ -85,8 +99,17 @@ function App() {
           tasks={filteredTasks}
           onToggleComplete={toggleComplete}
           onDeleteTask={deleteTask}
+          onEditTask={setEditingTask}
         />
       </main>
+
+      {editingTask && (
+        <EditTaskModal
+          task={editingTask}
+          onClose={() => setEditingTask(null)}
+          onSave={editTask}
+        />
+      )}
     </div>
   );
 }

@@ -132,3 +132,7 @@ main {
   font-size: 16px;
   margin: 0;
 }
+.overdue-stat {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  animation: pulse 2s infinite;
+}

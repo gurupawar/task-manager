@@ -1,14 +1,18 @@
-export interface Task{
-    id: string;
-    title: string;
-    description: string;
-    completed: boolean;
-    createdAt: Date;
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  createdAt: Date;
+  dueDate?: Date; // Optional due date
 }
 
-// ---
-// **TypeScript Learning Moment:**
-// - `interface` defines the "shape" of an object
-// - It's like a contract: any Task MUST have these exact properties
-// - `export` lets us use this interface in other files
-// ---
+export enum Priority {
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+}
+
+export interface TaskWithPriority extends Task {
+  priority: Priority;
+}
