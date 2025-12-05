@@ -4,11 +4,12 @@ import { FilterType, SortType } from "../types/Filters";
 export const filterTasks = (
   tasks: Task[],
   filterType: FilterType,
-  searchQuery: string
+  searchQuery: string,
+  categoryFilter: string | null = null
 ): Task[] => {
   let filtered = [...tasks];
 
-  // Apply filter
+  // Apply completion filter
   switch (filterType) {
     case FilterType.ACTIVE:
       filtered = filtered.filter((task) => !task.completed);
@@ -18,16 +19,25 @@ export const filterTasks = (
       break;
     case FilterType.ALL:
     default:
-      // No filtering needed
       break;
   }
 
+  // Apply category filter
+  if (categoryFilter) {
+    filtered = filtered.filter(
+      (task) => task.categories && task.categories.includes(categoryFilter)
+    );
+  }
+
+  // Apply search
   if (searchQuery.trim() !== "") {
     const query = searchQuery.toLowerCase();
     filtered = filtered.filter(
       (task) =>
-        task.title.toLocaleLowerCase().includes(query) ||
-        task.description.toLowerCase().includes(query)
+        task.title.toLowerCase().includes(query) ||
+        task.description.toLowerCase().includes(query) ||
+        (task.categories &&
+          task.categories.some((cat) => cat.toLowerCase().includes(query)))
     );
   }
 

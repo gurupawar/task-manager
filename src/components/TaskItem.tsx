@@ -1,6 +1,6 @@
 import React from "react";
-import type { Task } from "../types/Task";
 import "./TaskItem.css";
+import { type Task } from "../types/Task";
 
 interface TaskItemProps {
   task: Task;
@@ -21,13 +21,12 @@ const TaskItem: React.FC<TaskItemProps> = ({
     task.dueDate &&
     !task.completed &&
     new Date(task.dueDate).getTime() - new Date().getTime() <
-      24 * 60 * 60 * 1000; // 24 hours
+      24 * 60 * 60 * 1000;
 
   const formatDueDate = (date: Date): string => {
     const today = new Date();
     const dueDate = new Date(date);
 
-    // Reset time parts for accurate comparison
     today.setHours(0, 0, 0, 0);
     dueDate.setHours(0, 0, 0, 0);
 
@@ -42,6 +41,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
 
     return `Due ${dueDate.toLocaleDateString()}`;
   };
+
   return (
     <div
       className={`task-item ${task.completed ? "completed" : ""} ${
@@ -64,6 +64,17 @@ const TaskItem: React.FC<TaskItemProps> = ({
           {task.description && (
             <p className="task-description">{task.description}</p>
           )}
+
+          {task.categories && task.categories.length > 0 && (
+            <div className="task-categories">
+              {task.categories.map((category) => (
+                <span key={category} className="task-category-tag">
+                  {category}
+                </span>
+              ))}
+            </div>
+          )}
+
           <div className="task-metadata">
             <span className="task-date">
               Created: {task.createdAt.toLocaleDateString()}

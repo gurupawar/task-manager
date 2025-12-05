@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import FilterBar from "./components/FilterBar";
-import { useTasks } from "./hooks/useTasks";
 import EditTaskModal from "./components/EditTaskModal";
-import type { Task } from "./types/Task";
+import { useTasks } from "./hooks/useTasks";
+import { type Task } from "./types/Task";
 
 function App() {
   const {
@@ -15,14 +15,18 @@ function App() {
     filterType,
     sortType,
     searchQuery,
+    availableCategories,
+    selectedCategoryFilter,
     addTask,
     editTask,
     toggleComplete,
     deleteTask,
     clearAllTasks,
+    addCategory,
     setFilterType,
     setSortType,
     setSearchQuery,
+    setSelectedCategoryFilter,
   } = useTasks();
 
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -53,7 +57,11 @@ function App() {
       </header>
 
       <main>
-        <TaskForm onAddTask={addTask} />
+        <TaskForm
+          onAddTask={addTask}
+          availableCategories={availableCategories}
+          onAddCategory={addCategory}
+        />
 
         {tasks.length > 0 && (
           <>
@@ -78,16 +86,20 @@ function App() {
               filterType={filterType}
               sortType={sortType}
               searchQuery={searchQuery}
+              selectedCategoryFilter={selectedCategoryFilter}
+              availableCategories={availableCategories}
               onFilterChange={setFilterType}
               onSortChange={setSortType}
               onSearchChange={setSearchQuery}
+              onCategoryFilterChange={setSelectedCategoryFilter}
             />
 
-            {filteredTasks.length === 0 && searchQuery && (
-              <div className="no-results">
-                <p>No tasks found for "{searchQuery}"</p>
-              </div>
-            )}
+            {filteredTasks.length === 0 &&
+              (searchQuery || selectedCategoryFilter) && (
+                <div className="no-results">
+                  <p>No tasks found matching your filters</p>
+                </div>
+              )}
 
             <button className="btn-clear-all" onClick={clearAllTasks}>
               Clear All Tasks
@@ -108,6 +120,8 @@ function App() {
           task={editingTask}
           onClose={() => setEditingTask(null)}
           onSave={editTask}
+          availableCategories={availableCategories}
+          onAddCategory={addCategory}
         />
       )}
     </div>

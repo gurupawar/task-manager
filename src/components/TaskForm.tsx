@@ -1,14 +1,27 @@
 import React, { useState } from "react";
 import "./TaskForm.css";
+import CategoryManager from "./CategoryManager";
 
 interface TaskFormProps {
-  onAddTask: (title: string, description: string, dueDate?: Date) => void;
+  onAddTask: (
+    title: string,
+    description: string,
+    dueDate?: Date,
+    categories?: string[]
+  ) => void;
+  availableCategories: string[];
+  onAddCategory: (category: string) => void;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
+const TaskForm: React.FC<TaskFormProps> = ({
+  onAddTask,
+  availableCategories,
+  onAddCategory,
+}) => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescrition] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,11 +32,13 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
     }
 
     const dueDateObj = dueDate ? new Date(dueDate) : undefined;
-    onAddTask(title, description, dueDateObj);
+    onAddTask(title, description, dueDateObj, selectedCategories);
 
     //Clear form
     setTitle("");
     setDescrition("");
+    setDueDate("");
+    setSelectedCategories([]);
   };
 
   return (
@@ -63,6 +78,13 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
             min={new Date().toISOString().split("T")[0]}
           />
         </div>
+
+        <CategoryManager
+          availableCategories={availableCategories}
+          selectedCategories={selectedCategories}
+          onCategoriesChange={setSelectedCategories}
+          onAddCategory={onAddCategory}
+        />
 
         <button type="submit" className="btn-add">
           Add Task

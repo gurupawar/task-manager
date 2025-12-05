@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./EditTaskModal.css";
-
 import { type Task } from "../types/Task";
+import CategoryManager from "./CategoryManager";
 
 interface EditTaskModalProps {
   task: Task;
@@ -10,19 +10,27 @@ interface EditTaskModalProps {
     id: string,
     title: string,
     description: string,
-    dueDate?: Date
+    dueDate?: Date,
+    categories?: string[]
   ) => void;
+  availableCategories: string[];
+  onAddCategory: (category: string) => void;
 }
 
 const EditTaskModal: React.FC<EditTaskModalProps> = ({
   task,
   onClose,
   onSave,
+  availableCategories,
+  onAddCategory,
 }) => {
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
   const [dueDate, setDueDate] = useState<string>(
     task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : ""
+  );
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    task.categories || []
   );
 
   useEffect(() => {
@@ -31,6 +39,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
         onClose();
       }
     };
+
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [onClose]);
@@ -44,7 +53,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
     }
 
     const dueDateObj = dueDate ? new Date(dueDate) : undefined;
-    onSave(task.id, title, description, dueDateObj);
+    onSave(task.id, title, description, dueDateObj, selectedCategories);
     onClose();
   };
 
@@ -98,6 +107,13 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
               className="task-date-input"
             />
           </div>
+
+          <CategoryManager
+            availableCategories={availableCategories}
+            selectedCategories={selectedCategories}
+            onCategoriesChange={setSelectedCategories}
+            onAddCategory={onAddCategory}
+          />
 
           <div className="modal-actions">
             <button type="button" className="btn-cancel" onClick={onClose}>

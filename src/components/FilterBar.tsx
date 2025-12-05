@@ -1,23 +1,29 @@
-import type React from "react";
-import { FilterType, SortType } from "../types/Filters";
+import React from "react";
 import "./FilterBar.css";
+import { FilterType, SortType } from "../types/Filters";
 
 interface FilterBarProps {
   filterType: FilterType;
   sortType: SortType;
   searchQuery: string;
-  onFilterChange: (sort: FilterType) => void;
+  selectedCategoryFilter: string | null;
+  availableCategories: string[];
+  onFilterChange: (filter: FilterType) => void;
   onSortChange: (sort: SortType) => void;
   onSearchChange: (query: string) => void;
+  onCategoryFilterChange: (category: string | null) => void;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
   filterType,
   sortType,
   searchQuery,
+  selectedCategoryFilter,
+  availableCategories,
   onFilterChange,
   onSortChange,
   onSearchChange,
+  onCategoryFilterChange,
 }) => {
   return (
     <div className="filter-bar">
@@ -60,6 +66,34 @@ const FilterBar: React.FC<FilterBarProps> = ({
         </button>
       </div>
 
+      {/* Category Filter */}
+      {availableCategories.length > 0 && (
+        <div className="category-filter">
+          <label>Filter by category:</label>
+          <div className="category-filter-chips">
+            <button
+              className={`category-filter-chip ${
+                selectedCategoryFilter === null ? "active" : ""
+              }`}
+              onClick={() => onCategoryFilterChange(null)}
+            >
+              All Categories
+            </button>
+            {availableCategories.map((category) => (
+              <button
+                key={category}
+                className={`category-filter-chip ${
+                  selectedCategoryFilter === category ? "active" : ""
+                }`}
+                onClick={() => onCategoryFilterChange(category)}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Sort Dropdown */}
       <div className="sort-box">
         <label htmlFor="sort-select">Sort by:</label>
@@ -78,4 +112,5 @@ const FilterBar: React.FC<FilterBarProps> = ({
     </div>
   );
 };
+
 export default FilterBar;

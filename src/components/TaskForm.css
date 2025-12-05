@@ -1,50 +1,66 @@
 .task-form {
-    margin-bottom: 30px;
-  }
+  margin-bottom: 30px;
+}
 
-  .form-group {
-    margin-bottom: 15px;
-  }
+.form-group {
+  margin-bottom: 15px;
+}
 
-  .task-input,
-  .task-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 16px;
-    font-family: inherit;
-    transition: border-color 0.3s;
-  }
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
 
-  .task-input:focus,
-  .task-textarea:focus {
-    outline: none;
-    border-color: #4CAF50;
-  }
+.task-input,
+.task-textarea,
+.task-date-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
 
-  .task-textarea {
-    resize: vertical;
-    min-height: 80px;
-  }
+.task-input:focus,
+.task-textarea:focus,
+.task-date-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
 
-  .btn-add {
-    width: 100%;
-    padding: 12px;
-    background: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
+.task-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
 
-  .btn-add:hover {
-    background: #45a049;
-  }
+.task-date-input {
+  cursor: pointer;
+}
 
-  .btn-add:active {
-    transform: translateY(1px);
-  }
+.btn-add {
+  width: 100%;
+  padding: 12px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-add:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-add:active {
+  transform: translateY(0);
+}
