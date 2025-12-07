@@ -10,14 +10,13 @@ export const useTasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterType, setFilterType] = useState<FilterType>(FilterType.ALL);
-  const [sortType, setSortType] = useState<SortType>(SortType.DATE_DESC);
+  const [sortType, setSortType] = useState<SortType>(SortType.MANUAL);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<
     string | null
   >(null);
 
-  // Load tasks and categories from localStorage
   useEffect(() => {
     const loadedTasks = loadTasks();
     const savedCategories = localStorage.getItem(CATEGORIES_KEY);
@@ -29,21 +28,18 @@ export const useTasks = () => {
     setIsLoading(false);
   }, []);
 
-  // Save tasks to localStorage
   useEffect(() => {
     if (!isLoading) {
       saveTasks(tasks);
     }
   }, [tasks, isLoading]);
 
-  // Save categories to localStorage
   useEffect(() => {
     if (!isLoading) {
       localStorage.setItem(CATEGORIES_KEY, JSON.stringify(availableCategories));
     }
   }, [availableCategories, isLoading]);
 
-  // Memoized filtered and sorted tasks
   const filteredAndSortedTasks = useMemo(() => {
     const filtered = filterTasks(
       tasks,
@@ -60,6 +56,9 @@ export const useTasks = () => {
     dueDate?: Date,
     categories: string[] = []
   ): void => {
+    const maxOrder =
+      tasks.length > 0 ? Math.max(...tasks.map((t) => t.order || 0)) : -1;
+
     const newTask: Task = {
       id: Date.now().toString(),
       title,
@@ -68,6 +67,7 @@ export const useTasks = () => {
       createdAt: new Date(),
       dueDate,
       categories,
+      order: maxOrder + 1,
     };
 
     setTasks((prevTasks) => [...prevTasks, newTask]);
@@ -113,6 +113,19 @@ export const useTasks = () => {
     }
   };
 
+  const reorderTasks = (reorderedTasks: Task[]): void => {
+    setTasks(reorderedTasks);
+    setSortType(SortType.MANUAL);
+  };
+
+  const importTasks = (
+    importedTasks: Task[],
+    importedCategories: string[]
+  ): void => {
+    setTasks(importedTasks);
+    setAvailableCategories(importedCategories);
+  };
+
   return {
     tasks,
     filteredTasks: filteredAndSortedTasks,
@@ -128,6 +141,8 @@ export const useTasks = () => {
     deleteTask,
     clearAllTasks,
     addCategory,
+    reorderTasks,
+    importTasks,
     setFilterType,
     setSortType,
     setSearchQuery,

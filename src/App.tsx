@@ -4,6 +4,7 @@ import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import FilterBar from "./components/FilterBar";
 import EditTaskModal from "./components/EditTaskModal";
+import ExportImport from "./components/ExportImport";
 import { useTasks } from "./hooks/useTasks";
 import { type Task } from "./types/Task";
 
@@ -23,6 +24,8 @@ function App() {
     deleteTask,
     clearAllTasks,
     addCategory,
+    reorderTasks,
+    importTasks,
     setFilterType,
     setSortType,
     setSearchQuery,
@@ -61,6 +64,12 @@ function App() {
           onAddTask={addTask}
           availableCategories={availableCategories}
           onAddCategory={addCategory}
+        />
+
+        <ExportImport
+          tasks={tasks}
+          categories={availableCategories}
+          onImport={importTasks}
         />
 
         {tasks.length > 0 && (
@@ -112,6 +121,7 @@ function App() {
           onToggleComplete={toggleComplete}
           onDeleteTask={deleteTask}
           onEditTask={setEditingTask}
+          onReorderTasks={reorderTasks}
         />
       </main>
 

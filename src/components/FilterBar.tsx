@@ -103,6 +103,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
           onChange={(e) => onSortChange(e.target.value as SortType)}
           className="sort-select"
         >
+          <option value={SortType.MANUAL}>Manual Order</option>
           <option value={SortType.DATE_DESC}>Newest First</option>
           <option value={SortType.DATE_ASC}>Oldest First</option>
           <option value={SortType.TITLE_ASC}>Title (A-Z)</option>
