@@ -48,14 +48,17 @@ export const sortTasks = (tasks: Task[], sortType: SortType): Task[] => {
   const sorted = [...tasks];
 
   switch (sortType) {
+    case SortType.MANUAL:
+      return sorted.sort((a, b) => (a.order || 0) - (b.order || 0));
+
     case SortType.DATE_DESC:
       return sorted.sort(
-        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
 
     case SortType.DATE_ASC:
       return sorted.sort(
-        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       );
 
     case SortType.TITLE_ASC:
@@ -69,6 +72,6 @@ export const sortTasks = (tasks: Task[], sortType: SortType): Task[] => {
       );
 
     default:
-      return sorted;
+      return sorted.sort((a, b) => (a.order || 0) - (b.order || 0));
   }
 };

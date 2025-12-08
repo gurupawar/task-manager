@@ -7,6 +7,10 @@ interface TaskItemProps {
   onToggleComplete: (id: string) => void;
   onDeleteTask: (id: string) => void;
   onEditTask: (task: Task) => void;
+  onDragStart: (e: React.DragEvent, taskId: string) => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: (e: React.DragEvent, taskId: string) => void;
+  isDragging: boolean;
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({
@@ -14,6 +18,10 @@ const TaskItem: React.FC<TaskItemProps> = ({
   onToggleComplete,
   onDeleteTask,
   onEditTask,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  isDragging,
 }) => {
   const isOverdue =
     task.dueDate && !task.completed && new Date(task.dueDate) < new Date();
@@ -46,8 +54,16 @@ const TaskItem: React.FC<TaskItemProps> = ({
     <div
       className={`task-item ${task.completed ? "completed" : ""} ${
         isOverdue ? "overdue" : ""
-      }`}
+      } ${isDragging ? "dragging" : ""}`}
+      draggable
+      onDragStart={(e) => onDragStart(e, task.id)}
+      onDragOver={onDragOver}
+      onDrop={(e) => onDrop(e, task.id)}
     >
+      <div className="drag-handle" title="Drag to reorder">
+        ⋮⋮
+      </div>
+
       <div className="task-content">
         <div className="task-checkbox">
           <input

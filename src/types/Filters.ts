@@ -5,6 +5,7 @@ export enum FilterType {
 }
 
 export enum SortType {
+  MANUAL = "manual",
   DATE_DESC = "date_desc",
   DATE_ASC = "date_asc",
   TITLE_ASC = "title_asc",

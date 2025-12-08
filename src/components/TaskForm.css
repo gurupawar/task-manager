@@ -11,26 +11,26 @@
   margin-bottom: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .task-input,
-.task-textarea,
-.task-date-input {
+.task-textarea {
   width: 100%;
   padding: 12px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 6px;
   font-size: 16px;
   font-family: inherit;
   transition: border-color 0.3s;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .task-input:focus,
-.task-textarea:focus,
-.task-date-input:focus {
+.task-textarea:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #4caf50;
 }
 
 .task-textarea {
@@ -39,28 +39,40 @@
 }
 
 .task-date-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: border-color 0.3s;
   cursor: pointer;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.task-date-input:focus {
+  outline: none;
+  border-color: #4caf50;
 }
 
 .btn-add {
   width: 100%;
   padding: 12px;
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   border: none;
   border-radius: 6px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: background 0.3s;
 }
 
 .btn-add:hover {
   background: #45a049;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
 }
 
 .btn-add:active {
-  transform: translateY(0);
+  transform: translateY(1px);
 }

@@ -6,6 +6,7 @@ export interface Task {
   createdAt: Date;
   dueDate?: Date; // Optional due date
   categories: string[];
+  order: number;
 }
 
 export enum Priority {
