@@ -1,6 +1,10 @@
 import React from "react";
-import "./TaskItem.css";
 import { type Task } from "../types/Task";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { Edit, Trash2, Calendar } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface TaskItemProps {
   task: Task;
@@ -31,100 +35,110 @@ const TaskItem: React.FC<TaskItemProps> = ({
     new Date(task.dueDate).getTime() - new Date().getTime() <
       24 * 60 * 60 * 1000;
 
-  const formatDueDate = (date: Date): string => {
-    const today = new Date();
-    const dueDate = new Date(date);
-
-    today.setHours(0, 0, 0, 0);
-    dueDate.setHours(0, 0, 0, 0);
-
-    const diffTime = dueDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) return "Due today";
-    if (diffDays === 1) return "Due tomorrow";
-    if (diffDays === -1) return "Was due yesterday";
-    if (diffDays < 0) return `Overdue by ${Math.abs(diffDays)} days`;
-    if (diffDays <= 7) return `Due in ${diffDays} days`;
-
-    return `Due ${dueDate.toLocaleDateString()}`;
+  const formatDate = (date: Date): string => {
+    return date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
     <div
-      className={`task-item ${task.completed ? "completed" : ""} ${
-        isOverdue ? "overdue" : ""
-      } ${isDragging ? "dragging" : ""}`}
+      className={cn(
+        "border rounded-lg p-4 mb-3 bg-card transition-all hover:shadow-sm",
+        task.completed && "opacity-60",
+        isOverdue && !task.completed && "border-destructive/50",
+        isDragging && "opacity-50 scale-95"
+      )}
       draggable
       onDragStart={(e) => onDragStart(e, task.id)}
       onDragOver={onDragOver}
       onDrop={(e) => onDrop(e, task.id)}
     >
-      <div className="drag-handle" title="Drag to reorder">
-        ⋮⋮
-      </div>
+      <div className="flex items-start gap-3">
+        <Checkbox
+          checked={task.completed}
+          onCheckedChange={() => onToggleComplete(task.id)}
+          id={`task-${task.id}`}
+          className="mt-1"
+        />
 
-      <div className="task-content">
-        <div className="task-checkbox">
-          <input
-            type="checkbox"
-            checked={task.completed}
-            onChange={() => onToggleComplete(task.id)}
-            id={`task-${task.id}`}
-          />
-          <label htmlFor={`task-${task.id}`}></label>
-        </div>
+        <div className="flex-1 min-w-0">
+          <label
+            htmlFor={`task-${task.id}`}
+            className={cn(
+              "text-base font-medium cursor-pointer block",
+              task.completed && "line-through text-muted-foreground"
+            )}
+          >
+            {task.title}
+          </label>
 
-        <div className="task-details">
-          <h3 className="task-title">{task.title}</h3>
           {task.description && (
-            <p className="task-description">{task.description}</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {task.description}
+            </p>
           )}
 
           {task.categories && task.categories.length > 0 && (
-            <div className="task-categories">
+            <div className="flex flex-wrap gap-1.5 mt-2">
               {task.categories.map((category) => (
-                <span key={category} className="task-category-tag">
+                <Badge
+                  key={category}
+                  variant="secondary"
+                  className="text-xs"
+                >
                   {category}
-                </span>
+                </Badge>
               ))}
             </div>
           )}
 
-          <div className="task-metadata">
-            <span className="task-date">
-              Created: {task.createdAt.toLocaleDateString()}
-            </span>
+          <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
             {task.dueDate && (
-              <span
-                className={`task-due-date ${isOverdue ? "overdue" : ""} ${
-                  isDueSoon ? "due-soon" : ""
-                }`}
-              >
-                📅 {formatDueDate(task.dueDate)}
-              </span>
+              <div className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                <span
+                  className={cn(
+                    isOverdue && "text-destructive font-medium",
+                    isDueSoon && !isOverdue && "text-orange-500 font-medium"
+                  )}
+                >
+                  {formatDate(task.dueDate)}
+                </span>
+              </div>
+            )}
+            {!task.dueDate && (
+              <span>{formatDate(task.createdAt)}</span>
             )}
           </div>
         </div>
-      </div>
 
-      <div className="task-actions">
-        <button
-          className="btn-edit"
-          onClick={() => onEditTask(task)}
-          aria-label="Edit task"
-          title="Edit task"
-        >
-          ✏️
-        </button>
-        <button
-          className="btn-delete"
-          onClick={() => onDeleteTask(task.id)}
-          aria-label="Delete task"
-          title="Delete task"
-        >
-          🗑️
-        </button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onEditTask(task)}
+            aria-label="Edit task"
+            title="Edit task"
+            className="h-8 w-8"
+          >
+            <Edit className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onDeleteTask(task.id)}
+            aria-label="Delete task"
+            title="Delete task"
+            className="h-8 w-8 text-destructive hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

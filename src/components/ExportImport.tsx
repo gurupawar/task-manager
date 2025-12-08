@@ -1,11 +1,12 @@
 import React, { useRef } from "react";
-import "./ExportImport.css";
 import { type Task } from "../types/Task";
 import {
   exportTasksToJSON,
   exportTasksToCSV,
   importTasksFromJSON,
 } from "../utils/exportImports";
+import { Button } from "@/components/ui/button";
+import { Download, Upload, FileJson, FileSpreadsheet } from "lucide-react";
 
 interface ExportImportProps {
   tasks: Task[];
@@ -22,7 +23,6 @@ const ExportImport: React.FC<ExportImportProps> = ({
 
   const handleExportJSON = () => {
     if (tasks.length === 0) {
-      alert("No tasks to export!");
       return;
     }
     exportTasksToJSON(tasks, categories);
@@ -30,7 +30,6 @@ const ExportImport: React.FC<ExportImportProps> = ({
 
   const handleExportCSV = () => {
     if (tasks.length === 0) {
-      alert("No tasks to export!");
       return;
     }
     exportTasksToCSV(tasks);
@@ -52,50 +51,50 @@ const ExportImport: React.FC<ExportImportProps> = ({
 
       if (window.confirm(confirmMessage)) {
         onImport(importedTasks, importedCategories);
-        alert("Import successful!");
       }
     } catch (error) {
       alert(error instanceof Error ? error.message : "Import failed");
     }
 
-    // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
   return (
-    <div className="export-import">
-      <h3>📦 Data Management</h3>
-      <div className="export-import-buttons">
-        <button
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2">
+        <Button
           onClick={handleExportJSON}
-          className="btn-export"
-          title="Export as JSON"
+          variant="outline"
+          className="flex-1 sm:flex-initial"
         >
-          📥 Export JSON
-        </button>
-        <button
+          <FileJson className="mr-2 h-4 w-4" />
+          Export JSON
+        </Button>
+        <Button
           onClick={handleExportCSV}
-          className="btn-export"
-          title="Export as CSV"
+          variant="outline"
+          className="flex-1 sm:flex-initial"
         >
-          📊 Export CSV
-        </button>
-        <button
+          <FileSpreadsheet className="mr-2 h-4 w-4" />
+          Export CSV
+        </Button>
+        <Button
           onClick={handleImportClick}
-          className="btn-import"
-          title="Import from JSON"
+          variant="outline"
+          className="flex-1 sm:flex-initial"
         >
-          📤 Import JSON
-        </button>
+          <Upload className="mr-2 h-4 w-4" />
+          Import JSON
+        </Button>
       </div>
       <input
         ref={fileInputRef}
         type="file"
         accept=".json"
         onChange={handleFileChange}
-        style={{ display: "none" }}
+        className="hidden"
       />
     </div>
   );

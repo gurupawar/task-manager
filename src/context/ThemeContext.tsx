@@ -35,7 +35,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const savedTheme = localStorage.getItem("taskmaster_theme") as Theme;
     if (savedTheme) {
       setTheme(savedTheme);
-      document.documentElement.setAttribute("data-theme", savedTheme);
+      if (savedTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     }
   }, []);
 
@@ -43,7 +47,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const newTheme: Theme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.setItem("taskmaster_theme", newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
+    if (newTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   };
 
   return (

@@ -1,6 +1,17 @@
 import React from "react";
-import "./FilterBar.css";
 import { FilterType, SortType } from "../types/Filters";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface FilterBarProps {
   filterType: FilterType;
@@ -26,89 +37,93 @@ const FilterBar: React.FC<FilterBarProps> = ({
   onCategoryFilterChange,
 }) => {
   return (
-    <div className="filter-bar">
+    <div className="space-y-4">
       {/* Search Input */}
-      <div className="search-box">
-        <input
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
           type="text"
-          placeholder="🔍 Search tasks..."
+          placeholder="Search tasks..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="search-input"
+          className="pl-9"
         />
       </div>
 
       {/* Filter Buttons */}
-      <div className="filter-buttons">
-        <button
-          className={`filter-btn ${
-            filterType === FilterType.ALL ? "active" : ""
-          }`}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant={filterType === FilterType.ALL ? "default" : "outline"}
+          size="sm"
           onClick={() => onFilterChange(FilterType.ALL)}
         >
           All
-        </button>
-        <button
-          className={`filter-btn ${
-            filterType === FilterType.ACTIVE ? "active" : ""
-          }`}
+        </Button>
+        <Button
+          variant={filterType === FilterType.ACTIVE ? "default" : "outline"}
+          size="sm"
           onClick={() => onFilterChange(FilterType.ACTIVE)}
         >
           Active
-        </button>
-        <button
-          className={`filter-btn ${
-            filterType === FilterType.COMPLETED ? "active" : ""
-          }`}
+        </Button>
+        <Button
+          variant={filterType === FilterType.COMPLETED ? "default" : "outline"}
+          size="sm"
           onClick={() => onFilterChange(FilterType.COMPLETED)}
         >
           Completed
-        </button>
+        </Button>
       </div>
 
       {/* Category Filter */}
       {availableCategories.length > 0 && (
-        <div className="category-filter">
-          <label>Filter by category:</label>
-          <div className="category-filter-chips">
-            <button
-              className={`category-filter-chip ${
-                selectedCategoryFilter === null ? "active" : ""
-              }`}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Filter by category:</label>
+          <div className="flex flex-wrap gap-2">
+            <Badge
+              variant={selectedCategoryFilter === null ? "default" : "outline"}
+              className={cn(
+                "cursor-pointer",
+                selectedCategoryFilter === null && "ring-2 ring-primary"
+              )}
               onClick={() => onCategoryFilterChange(null)}
             >
               All Categories
-            </button>
+            </Badge>
             {availableCategories.map((category) => (
-              <button
+              <Badge
                 key={category}
-                className={`category-filter-chip ${
-                  selectedCategoryFilter === category ? "active" : ""
-                }`}
+                variant={selectedCategoryFilter === category ? "default" : "outline"}
+                className={cn(
+                  "cursor-pointer",
+                  selectedCategoryFilter === category && "ring-2 ring-primary"
+                )}
                 onClick={() => onCategoryFilterChange(category)}
               >
                 {category}
-              </button>
+              </Badge>
             ))}
           </div>
         </div>
       )}
 
       {/* Sort Dropdown */}
-      <div className="sort-box">
-        <label htmlFor="sort-select">Sort by:</label>
-        <select
-          id="sort-select"
-          value={sortType}
-          onChange={(e) => onSortChange(e.target.value as SortType)}
-          className="sort-select"
-        >
-          <option value={SortType.MANUAL}>Manual Order</option>
-          <option value={SortType.DATE_DESC}>Newest First</option>
-          <option value={SortType.DATE_ASC}>Oldest First</option>
-          <option value={SortType.TITLE_ASC}>Title (A-Z)</option>
-          <option value={SortType.TITLE_DESC}>Title (Z-A)</option>
-        </select>
+      <div className="flex items-center gap-2">
+        <label htmlFor="sort-select" className="text-sm font-medium whitespace-nowrap">
+          Sort by:
+        </label>
+        <Select value={sortType} onValueChange={(value) => onSortChange(value as SortType)}>
+          <SelectTrigger id="sort-select" className="w-full sm:w-[200px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={SortType.MANUAL}>Manual Order</SelectItem>
+            <SelectItem value={SortType.DATE_DESC}>Newest First</SelectItem>
+            <SelectItem value={SortType.DATE_ASC}>Oldest First</SelectItem>
+            <SelectItem value={SortType.TITLE_ASC}>Title (A-Z)</SelectItem>
+            <SelectItem value={SortType.TITLE_DESC}>Title (Z-A)</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

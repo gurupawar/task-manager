@@ -1,6 +1,15 @@
 import React, { useMemo } from "react";
-import "./Statistics.css";
 import { type Task } from "../types/Task";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { BarChart3, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 
 interface StatisticsProps {
   tasks: Task[];
@@ -20,7 +29,6 @@ const Statistics: React.FC<StatisticsProps> = ({ tasks, isOpen, onClose }) => {
     const completionRate =
       total > 0 ? Math.round((completed / total) * 100) : 0;
 
-    // Tasks by category
     const categoryStats: { [key: string]: number } = {};
     tasks.forEach((task) => {
       task.categories.forEach((cat) => {
@@ -28,19 +36,16 @@ const Statistics: React.FC<StatisticsProps> = ({ tasks, isOpen, onClose }) => {
       });
     });
 
-    // Tasks created this week
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     const createdThisWeek = tasks.filter(
       (t) => new Date(t.createdAt) >= oneWeekAgo
     ).length;
 
-    // Tasks completed this week
     const completedThisWeek = tasks.filter(
       (t) => t.completed && new Date(t.createdAt) >= oneWeekAgo
     ).length;
 
-    // Upcoming tasks (next 7 days)
     const oneWeekFromNow = new Date();
     oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
     const upcoming = tasks.filter(
@@ -51,7 +56,6 @@ const Statistics: React.FC<StatisticsProps> = ({ tasks, isOpen, onClose }) => {
         new Date(t.dueDate) >= new Date()
     ).length;
 
-    // Average completion time (for completed tasks with due dates)
     const completedWithDates = tasks.filter((t) => t.completed && t.dueDate);
     const avgCompletionDays =
       completedWithDates.length > 0
@@ -78,89 +82,92 @@ const Statistics: React.FC<StatisticsProps> = ({ tasks, isOpen, onClose }) => {
     };
   }, [tasks]);
 
-  if (!isOpen) return null;
-
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
   return (
-    <div className="stats-modal-backdrop" onClick={handleBackdropClick}>
-      <div className="stats-modal">
-        <div className="stats-header">
-          <h2>📊 Task Statistics</h2>
-          <button className="btn-close" onClick={onClose}>
-            ✕
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            Task Statistics
+          </DialogTitle>
+        </DialogHeader>
 
-        <div className="stats-content">
+        <div className="space-y-6">
           {/* Overview Cards */}
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-icon">📋</div>
-              <div className="stat-value">{stats.total}</div>
-              <div className="stat-label">Total Tasks</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center text-center">
+                  <div className="text-2xl mb-2">📋</div>
+                  <div className="text-2xl font-bold">{stats.total}</div>
+                  <div className="text-sm text-muted-foreground">Total Tasks</div>
             </div>
+              </CardContent>
+            </Card>
 
-            <div className="stat-card success">
-              <div className="stat-icon">✅</div>
-              <div className="stat-value">{stats.completed}</div>
-              <div className="stat-label">Completed</div>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center text-center">
+                  <CheckCircle2 className="h-6 w-6 text-primary mb-2" />
+                  <div className="text-2xl font-bold">{stats.completed}</div>
+                  <div className="text-sm text-muted-foreground">Completed</div>
             </div>
+              </CardContent>
+            </Card>
 
-            <div className="stat-card active">
-              <div className="stat-icon">🔄</div>
-              <div className="stat-value">{stats.active}</div>
-              <div className="stat-label">Active</div>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center text-center">
+                  <Clock className="h-6 w-6 text-blue-500 mb-2" />
+                  <div className="text-2xl font-bold">{stats.active}</div>
+                  <div className="text-sm text-muted-foreground">Active</div>
             </div>
+              </CardContent>
+            </Card>
 
-            <div className="stat-card danger">
-              <div className="stat-icon">⚠️</div>
-              <div className="stat-value">{stats.overdue}</div>
-              <div className="stat-label">Overdue</div>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center text-center">
+                  <AlertTriangle className="h-6 w-6 text-destructive mb-2" />
+                  <div className="text-2xl font-bold">{stats.overdue}</div>
+                  <div className="text-sm text-muted-foreground">Overdue</div>
             </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Completion Rate */}
-          <div className="completion-section">
-            <h3>Completion Rate</h3>
-            <div className="progress-bar">
-              <div
-                className="progress-fill"
-                style={{ width: `${stats.completionRate}%` }}
-              >
-                <span className="progress-text">{stats.completionRate}%</span>
+          <div className="space-y-2">
+            <h3 className="font-semibold">Completion Rate</h3>
+            <div className="space-y-1">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Progress</span>
+                <span className="font-medium">{stats.completionRate}%</span>
               </div>
+              <Progress value={stats.completionRate} className="h-2" />
             </div>
           </div>
 
           {/* Activity This Week */}
-          <div className="activity-section">
-            <h3>This Week's Activity</h3>
-            <div className="activity-grid">
-              <div className="activity-item">
-                <span className="activity-label">📝 Created</span>
-                <span className="activity-value">{stats.createdThisWeek}</span>
+          <div className="space-y-3">
+            <h3 className="font-semibold">This Week's Activity</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="flex flex-col items-center p-3 border rounded-lg">
+                <span className="text-sm text-muted-foreground mb-1">📝 Created</span>
+                <span className="text-xl font-bold">{stats.createdThisWeek}</span>
               </div>
-              <div className="activity-item">
-                <span className="activity-label">✅ Completed</span>
-                <span className="activity-value">
-                  {stats.completedThisWeek}
-                </span>
+              <div className="flex flex-col items-center p-3 border rounded-lg">
+                <span className="text-sm text-muted-foreground mb-1">✅ Completed</span>
+                <span className="text-xl font-bold">{stats.completedThisWeek}</span>
               </div>
-              <div className="activity-item">
-                <span className="activity-label">📅 Upcoming</span>
-                <span className="activity-value">{stats.upcoming}</span>
+              <div className="flex flex-col items-center p-3 border rounded-lg">
+                <span className="text-sm text-muted-foreground mb-1">📅 Upcoming</span>
+                <span className="text-xl font-bold">{stats.upcoming}</span>
               </div>
               {stats.avgCompletionDays > 0 && (
-                <div className="activity-item">
-                  <span className="activity-label">⏱️ Avg. Days</span>
-                  <span className="activity-value">
-                    {stats.avgCompletionDays}
-                  </span>
+                <div className="flex flex-col items-center p-3 border rounded-lg">
+                  <span className="text-sm text-muted-foreground mb-1">⏱️ Avg. Days</span>
+                  <span className="text-xl font-bold">{stats.avgCompletionDays}</span>
                 </div>
               )}
             </div>
@@ -168,23 +175,21 @@ const Statistics: React.FC<StatisticsProps> = ({ tasks, isOpen, onClose }) => {
 
           {/* Category Breakdown */}
           {Object.keys(stats.categoryStats).length > 0 && (
-            <div className="category-section">
-              <h3>Tasks by Category</h3>
-              <div className="category-breakdown">
+            <div className="space-y-3">
+              <h3 className="font-semibold">Tasks by Category</h3>
+              <div className="space-y-2">
                 {Object.entries(stats.categoryStats)
                   .sort((a, b) => b[1] - a[1])
                   .map(([category, count]) => (
-                    <div key={category} className="category-stat-item">
-                      <div className="category-stat-label">{category}</div>
-                      <div className="category-stat-bar">
-                        <div
-                          className="category-stat-fill"
-                          style={{
-                            width: `${(count / stats.total) * 100}%`,
-                          }}
-                        />
+                    <div key={category} className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span className="font-medium">{category}</span>
+                        <span className="text-muted-foreground">{count}</span>
                       </div>
-                      <div className="category-stat-count">{count}</div>
+                      <Progress
+                        value={(count / stats.total) * 100}
+                        className="h-1.5"
+                      />
                     </div>
                   ))}
               </div>
@@ -192,42 +197,50 @@ const Statistics: React.FC<StatisticsProps> = ({ tasks, isOpen, onClose }) => {
           )}
 
           {/* Insights */}
-          <div className="insights-section">
-            <h3>💡 Insights</h3>
-            <ul className="insights-list">
+          <div className="space-y-2">
+            <h3 className="font-semibold">💡 Insights</h3>
+            <div className="space-y-2">
               {stats.completionRate >= 80 && (
-                <li className="insight-item positive">
-                  🎉 Great job! You're completing {stats.completionRate}% of
-                  your tasks!
-                </li>
+                <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                  <p className="text-sm">
+                    🎉 Great job! You're completing {stats.completionRate}% of your
+                    tasks!
+                  </p>
+                </div>
               )}
               {stats.overdue > 0 && (
-                <li className="insight-item warning">
+                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                  <p className="text-sm">
                   ⚠️ You have {stats.overdue} overdue task
                   {stats.overdue > 1 ? "s" : ""}. Consider reviewing them.
-                </li>
+                  </p>
+                </div>
               )}
               {stats.upcoming > 0 && (
-                <li className="insight-item info">
-                  📅 {stats.upcoming} task{stats.upcoming > 1 ? "s are" : " is"}{" "}
-                  due in the next 7 days.
-                </li>
+                <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                  <p className="text-sm">
+                    📅 {stats.upcoming} task{stats.upcoming > 1 ? "s are" : " is"} due
+                    in the next 7 days.
+                  </p>
+                </div>
               )}
               {stats.completedThisWeek > stats.createdThisWeek && (
-                <li className="insight-item positive">
+                <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                  <p className="text-sm">
                   💪 You completed more tasks than you created this week!
-                </li>
+                  </p>
+                </div>
               )}
               {stats.total === 0 && (
-                <li className="insight-item info">
-                  📝 Start by creating your first task!
-                </li>
+                <div className="p-3 bg-muted rounded-lg">
+                  <p className="text-sm">📝 Start by creating your first task!</p>
+                </div>
               )}
-            </ul>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
