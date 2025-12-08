@@ -1,6 +1,6 @@
 .task-item {
-  background: white;
-  border: 2px solid #e0e0e0;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 12px;
@@ -44,26 +44,26 @@
 .task-title {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 6px;
   word-wrap: break-word;
 }
 
 .task-item.completed .task-title {
   text-decoration: line-through;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .task-description {
   font-size: 14px;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 8px;
   line-height: 1.5;
   word-wrap: break-word;
 }
 
 .task-item.completed .task-description {
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .task-categories {
@@ -99,7 +99,7 @@
 
 .task-date {
   font-size: 12px;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .task-due-date {

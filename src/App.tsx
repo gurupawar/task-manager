@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 import FilterBar from "./components/FilterBar";
 import EditTaskModal from "./components/EditTaskModal";
 import ExportImport from "./components/ExportImport";
+import Statistics from "./components/Statistics";
 import { useTasks } from "./hooks/useTasks";
+import { useTheme } from "./context/ThemeContext";
 import { type Task } from "./types/Task";
 
 function App() {
@@ -32,7 +34,9 @@ function App() {
     setSelectedCategoryFilter,
   } = useTasks();
 
+  const { theme, toggleTheme } = useTheme();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [showStats, setShowStats] = useState(false);
 
   if (isLoading) {
     return (
@@ -54,6 +58,23 @@ function App() {
 
   return (
     <div className="app">
+      <div className="theme-toggle-container">
+        <button
+          className="btn-stats"
+          onClick={() => setShowStats(true)}
+          title="View Statistics"
+        >
+          📊
+        </button>
+        <button
+          className="btn-theme-toggle"
+          onClick={toggleTheme}
+          title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+        >
+          {theme === "light" ? "🌙" : "☀️"}
+        </button>
+      </div>
+
       <header>
         <h1>TaskMaster</h1>
         <p className="subtitle">Organize your work, one task at a time</p>
@@ -134,6 +155,12 @@ function App() {
           onAddCategory={addCategory}
         />
       )}
+
+      <Statistics
+        tasks={tasks}
+        isOpen={showStats}
+        onClose={() => setShowStats(false)}
+      />
     </div>
   );
 }
