@@ -24,6 +24,8 @@ import {
   Loader2,
   FileText,
   Database,
+  Menu,
+  X,
 } from "lucide-react";
 
 function App() {
@@ -41,6 +43,7 @@ function App() {
     toggleComplete,
     deleteTask,
     addCategory,
+    deleteCategory,
     reorderTasks,
     importTasks,
     setFilterType,
@@ -53,6 +56,7 @@ function App() {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [showStats, setShowStats] = useState(false);
   const [showDataManagement, setShowDataManagement] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -75,13 +79,24 @@ function App() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Full-width Header */}
-      <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="fixed top-0 left-0 right-0 z-30 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4 max-w-7xl">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center">
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Task Manager
+            {/* Logo with hamburger */}
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                title="Toggle menu"
+              >
+                {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                  Task Manager
+                </span>
               </h1>
             </div>
 
@@ -121,17 +136,40 @@ function App() {
       </header>
 
       {/* Main Layout: Sidebar + Content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative pt-[73px]">
+        {/* Mobile Overlay */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
         {/* Sidebar */}
-        <Sidebar
-          availableCategories={availableCategories}
-          selectedCategoryFilter={selectedCategoryFilter}
-          onCategoryFilterChange={setSelectedCategoryFilter}
-          onAddCategory={addCategory}
-        />
+        <div
+          className={`fixed inset-y-0 left-0 top-[73px] z-50 lg:z-20 transform transition-transform duration-300 ease-in-out lg:transform-none ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          }`}
+        >
+          <Sidebar
+            availableCategories={availableCategories}
+            selectedCategoryFilter={selectedCategoryFilter}
+            filterType={filterType}
+            onCategoryFilterChange={(category) => {
+              setSelectedCategoryFilter(category);
+              setSidebarOpen(false);
+            }}
+            onFilterTypeChange={(type) => {
+              setFilterType(type);
+              setSidebarOpen(false);
+            }}
+            onAddCategory={addCategory}
+            onDeleteCategory={deleteCategory}
+          />
+        </div>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto w-full lg:ml-64">
           <div className="container mx-auto px-6 py-6 max-w-5xl">
             {/* Title with count */}
             <div className="flex items-center gap-2 mb-6">
@@ -152,15 +190,10 @@ function App() {
             {tasks.length > 0 && (
               <div className="mb-6">
                 <FilterBar
-                  filterType={filterType}
                   sortType={sortType}
                   searchQuery={searchQuery}
-                  selectedCategoryFilter={selectedCategoryFilter}
-                  availableCategories={availableCategories}
-                  onFilterChange={setFilterType}
                   onSortChange={setSortType}
                   onSearchChange={setSearchQuery}
-                  onCategoryFilterChange={setSelectedCategoryFilter}
                 />
               </div>
             )}

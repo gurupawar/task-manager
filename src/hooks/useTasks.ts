@@ -113,6 +113,19 @@ export const useTasks = () => {
     }
   };
 
+  const deleteCategory = (category: string): void => {
+    setAvailableCategories((prev) => prev.filter((cat) => cat !== category));
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => ({
+        ...task,
+        categories: task.categories.filter((cat) => cat !== category),
+      }))
+    );
+    if (selectedCategoryFilter === category) {
+      setSelectedCategoryFilter(null);
+    }
+  };
+
   const reorderTasks = (reorderedTasks: Task[]): void => {
     setTasks(reorderedTasks);
     setSortType(SortType.MANUAL);
@@ -141,6 +154,7 @@ export const useTasks = () => {
     deleteTask,
     clearAllTasks,
     addCategory,
+    deleteCategory,
     reorderTasks,
     importTasks,
     setFilterType,

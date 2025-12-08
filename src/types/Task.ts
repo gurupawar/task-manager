@@ -8,13 +8,3 @@ export interface Task {
   categories: string[];
   order: number;
 }
-
-export enum Priority {
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-}
-
-export interface TaskWithPriority extends Task {
-  priority: Priority;
-}

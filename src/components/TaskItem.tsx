@@ -3,7 +3,7 @@ import { type Task } from "../types/Task";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Calendar } from "lucide-react";
+import { Edit, Trash2, Calendar, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TaskItemProps {
@@ -59,6 +59,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
       onDrop={(e) => onDrop(e, task.id)}
     >
       <div className="flex items-start gap-3">
+        <GripVertical className="h-5 w-5 text-muted-foreground/40 cursor-grab active:cursor-grabbing mt-1 flex-shrink-0" />
         <Checkbox
           checked={task.completed}
           onCheckedChange={() => onToggleComplete(task.id)}
