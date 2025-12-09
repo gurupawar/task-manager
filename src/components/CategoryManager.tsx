@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import "./CategoryManager.css";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Plus, Check, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CategoryManagerProps {
   availableCategories: string[];
@@ -22,7 +27,6 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
     if (trimmed && !availableCategories.includes(trimmed)) {
       onAddCategory(trimmed);
       setNewCategory("");
-      // Auto-select the newly added category
       onCategoriesChange([...selectedCategories, trimmed]);
     }
     setShowInput(false);
@@ -47,29 +51,29 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
   };
 
   return (
-    <div className="category-manager">
-      <label className="category-label">🏷️ Categories</label>
-
-      <div className="category-chips">
+    <div className="space-y-2">
+      <Label>Categories</Label>
+      <div className="flex flex-wrap gap-2">
         {availableCategories.map((category) => (
-          <button
+          <Badge
             key={category}
-            type="button"
-            className={`category-chip ${
-              selectedCategories.includes(category) ? "selected" : ""
-            }`}
+            variant={selectedCategories.includes(category) ? "default" : "outline"}
+            className={cn(
+              "cursor-pointer transition-all",
+              selectedCategories.includes(category) && "ring-2 ring-primary"
+            )}
             onClick={() => toggleCategory(category)}
           >
             {category}
             {selectedCategories.includes(category) && (
-              <span className="check">✓</span>
+              <Check className="ml-1 h-3 w-3" />
             )}
-          </button>
+          </Badge>
         ))}
 
         {showInput ? (
-          <div className="new-category-input">
-            <input
+          <div className="flex items-center gap-1">
+            <Input
               type="text"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
@@ -77,33 +81,39 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
               placeholder="Category name..."
               autoFocus
               maxLength={20}
+              className="h-7 w-32"
             />
-            <button
+            <Button
               type="button"
+              size="icon"
+              variant="ghost"
               onClick={handleAddCategory}
-              className="btn-add-cat"
+              className="h-7 w-7"
             >
-              ✓
-            </button>
-            <button
+              <Check className="h-3 w-3" />
+            </Button>
+            <Button
               type="button"
+              size="icon"
+              variant="ghost"
               onClick={() => {
                 setShowInput(false);
                 setNewCategory("");
               }}
-              className="btn-cancel-cat"
+              className="h-7 w-7"
             >
-              ✕
-            </button>
+              <X className="h-3 w-3" />
+            </Button>
           </div>
         ) : (
-          <button
-            type="button"
-            className="category-chip add-new"
+          <Badge
+            variant="outline"
+            className="cursor-pointer hover:bg-accent"
             onClick={() => setShowInput(true)}
           >
-            + Add New
-          </button>
+            <Plus className="mr-1 h-3 w-3" />
+            Add New
+          </Badge>
         )}
       </div>
     </div>

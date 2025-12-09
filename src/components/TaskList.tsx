@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./TaskList.css";
 import { type Task } from "../types/Task";
 import TaskItem from "./TaskItem";
 
@@ -50,7 +49,6 @@ const TaskList: React.FC<TaskListProps> = ({
     const [draggedTask] = newTasks.splice(draggedIndex, 1);
     newTasks.splice(targetIndex, 0, draggedTask);
 
-    // Update order property
     const reorderedTasks = newTasks.map((task, index) => ({
       ...task,
       order: index,
@@ -62,14 +60,16 @@ const TaskList: React.FC<TaskListProps> = ({
 
   if (tasks.length === 0) {
     return (
-      <div className="empty-state">
-        <p>📝 No tasks yet. Add your first task above!</p>
+      <div className="text-center py-12">
+        <p className="text-muted-foreground text-lg">
+          📝 No tasks yet. Add your first task above!
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="task-list">
+    <div className="space-y-3">
       {tasks.map((task) => (
         <TaskItem
           key={task.id}

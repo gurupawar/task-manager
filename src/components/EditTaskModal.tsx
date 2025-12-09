@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
-import "./EditTaskModal.css";
 import { type Task } from "../types/Task";
 import CategoryManager from "./CategoryManager";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "lucide-react";
 
 interface EditTaskModalProps {
   task: Task;
@@ -48,7 +59,6 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
     e.preventDefault();
 
     if (title.trim() === "") {
-      alert("Please enter a task title");
       return;
     }
 
@@ -57,54 +67,45 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
     onClose();
   };
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
   return (
-    <div className="modal-backdrop" onClick={handleBackdropClick}>
-      <div className="modal-content">
-        <div className="modal-header">
-          <h2>Edit Task</h2>
-          <button className="btn-close" onClick={onClose}>
-            ✕
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>Edit Task</DialogTitle>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="edit-title">Title</label>
-            <input
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="edit-title">Title</Label>
+            <Input
               id="edit-title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="task-input"
               autoFocus
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="edit-description">Description</label>
-            <textarea
+          <div className="space-y-2">
+            <Label htmlFor="edit-description">Description</Label>
+            <Textarea
               id="edit-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="task-textarea"
               rows={4}
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="edit-dueDate">📅 Due Date</label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="edit-dueDate" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Due Date
+            </Label>
+            <Input
               id="edit-dueDate"
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="task-date-input"
             />
           </div>
 
@@ -115,17 +116,15 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
             onAddCategory={onAddCategory}
           />
 
-          <div className="modal-actions">
-            <button type="button" className="btn-cancel" onClick={onClose}>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancel
-            </button>
-            <button type="submit" className="btn-save">
-              Save Changes
-            </button>
-          </div>
+            </Button>
+            <Button type="submit">Save Changes</Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

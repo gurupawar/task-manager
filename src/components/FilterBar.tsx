@@ -1,114 +1,59 @@
 import React from "react";
-import "./FilterBar.css";
-import { FilterType, SortType } from "../types/Filters";
+import { SortType } from "../types/Filters";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search } from "lucide-react";
 
 interface FilterBarProps {
-  filterType: FilterType;
   sortType: SortType;
   searchQuery: string;
-  selectedCategoryFilter: string | null;
-  availableCategories: string[];
-  onFilterChange: (filter: FilterType) => void;
   onSortChange: (sort: SortType) => void;
   onSearchChange: (query: string) => void;
-  onCategoryFilterChange: (category: string | null) => void;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
-  filterType,
   sortType,
   searchQuery,
-  selectedCategoryFilter,
-  availableCategories,
-  onFilterChange,
   onSortChange,
   onSearchChange,
-  onCategoryFilterChange,
 }) => {
   return (
-    <div className="filter-bar">
+    <div className="space-y-4">
       {/* Search Input */}
-      <div className="search-box">
-        <input
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
           type="text"
-          placeholder="🔍 Search tasks..."
+          placeholder="Search tasks..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="search-input"
+          className="pl-9"
         />
       </div>
 
-      {/* Filter Buttons */}
-      <div className="filter-buttons">
-        <button
-          className={`filter-btn ${
-            filterType === FilterType.ALL ? "active" : ""
-          }`}
-          onClick={() => onFilterChange(FilterType.ALL)}
-        >
-          All
-        </button>
-        <button
-          className={`filter-btn ${
-            filterType === FilterType.ACTIVE ? "active" : ""
-          }`}
-          onClick={() => onFilterChange(FilterType.ACTIVE)}
-        >
-          Active
-        </button>
-        <button
-          className={`filter-btn ${
-            filterType === FilterType.COMPLETED ? "active" : ""
-          }`}
-          onClick={() => onFilterChange(FilterType.COMPLETED)}
-        >
-          Completed
-        </button>
-      </div>
-
-      {/* Category Filter */}
-      {availableCategories.length > 0 && (
-        <div className="category-filter">
-          <label>Filter by category:</label>
-          <div className="category-filter-chips">
-            <button
-              className={`category-filter-chip ${
-                selectedCategoryFilter === null ? "active" : ""
-              }`}
-              onClick={() => onCategoryFilterChange(null)}
-            >
-              All Categories
-            </button>
-            {availableCategories.map((category) => (
-              <button
-                key={category}
-                className={`category-filter-chip ${
-                  selectedCategoryFilter === category ? "active" : ""
-                }`}
-                onClick={() => onCategoryFilterChange(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Sort Dropdown */}
-      <div className="sort-box">
-        <label htmlFor="sort-select">Sort by:</label>
-        <select
-          id="sort-select"
-          value={sortType}
-          onChange={(e) => onSortChange(e.target.value as SortType)}
-          className="sort-select"
-        >
-          <option value={SortType.MANUAL}>Manual Order</option>
-          <option value={SortType.DATE_DESC}>Newest First</option>
-          <option value={SortType.DATE_ASC}>Oldest First</option>
-          <option value={SortType.TITLE_ASC}>Title (A-Z)</option>
-          <option value={SortType.TITLE_DESC}>Title (Z-A)</option>
-        </select>
+      <div className="flex items-center gap-2">
+        <label htmlFor="sort-select" className="text-sm font-medium whitespace-nowrap">
+          Sort by:
+        </label>
+        <Select value={sortType} onValueChange={(value) => onSortChange(value as SortType)}>
+          <SelectTrigger id="sort-select" className="w-full sm:w-[200px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={SortType.MANUAL}>Manual Order</SelectItem>
+            <SelectItem value={SortType.DATE_DESC}>Newest First</SelectItem>
+            <SelectItem value={SortType.DATE_ASC}>Oldest First</SelectItem>
+            <SelectItem value={SortType.TITLE_ASC}>Title (A-Z)</SelectItem>
+            <SelectItem value={SortType.TITLE_DESC}>Title (Z-A)</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
