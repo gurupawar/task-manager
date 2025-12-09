@@ -6,7 +6,7 @@ import {
   importTasksFromJSON,
 } from "../utils/exportImports";
 import { Button } from "@/components/ui/button";
-import { Download, Upload, FileJson, FileSpreadsheet } from "lucide-react";
+import { Upload, FileJson, FileSpreadsheet } from "lucide-react";
 
 interface ExportImportProps {
   tasks: Task[];

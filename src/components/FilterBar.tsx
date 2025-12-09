@@ -1,7 +1,6 @@
 import React from "react";
 import { SortType } from "../types/Filters";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,9 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface FilterBarProps {
   sortType: SortType;
